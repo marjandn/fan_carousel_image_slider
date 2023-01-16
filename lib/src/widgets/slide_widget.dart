@@ -14,7 +14,12 @@ class SlideWidget extends StatelessWidget {
     required this.imageRadius,
     required this.sidesOpacity,
     required this.turns,
+    required this.currentItemShadow,
+    required this.sideItemsShadow,
+    required this.onSlideClick,
   });
+
+  final Function onSlideClick;
 
   final int index;
   final int actualIndex;
@@ -25,6 +30,8 @@ class SlideWidget extends StatelessWidget {
   final double imageRadius;
   final double sidesOpacity;
   final double turns;
+  final List<BoxShadow>? currentItemShadow;
+  final List<BoxShadow>? sideItemsShadow;
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +50,17 @@ class SlideWidget extends StatelessWidget {
         child: AnimatedOpacity(
           duration: sliderDuration,
           opacity: (index == actualIndex) ? 1 : sidesOpacity,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(imageRadius),
-              image: DecorationImage(
-                image:
-                    (!isAssets) ? NetworkImage(imageLink) : AssetImage(imageLink) as ImageProvider,
-                fit: imageFitMode,
+          child: InkWell(
+            onTap: () => onSlideClick(),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(imageRadius),
+                image: DecorationImage(
+                  image: (!isAssets)
+                      ? NetworkImage(imageLink)
+                      : AssetImage(imageLink) as ImageProvider,
+                  fit: imageFitMode,
+                ),
               ),
             ),
           ),
@@ -58,12 +69,8 @@ class SlideWidget extends StatelessWidget {
     );
   }
 
-  List<BoxShadow>? _getSlideBoxShadow(index, actualIndex) => (index == actualIndex)
-      ? const [
-          BoxShadow(offset: Offset(1, 1), color: Colors.grey, blurRadius: 10),
-          BoxShadow(offset: Offset(-1, -1), color: Colors.grey, blurRadius: 10),
-        ]
-      : null;
+  List<BoxShadow>? _getSlideBoxShadow(index, actualIndex) =>
+      (index == actualIndex) ? currentItemShadow : sideItemsShadow;
 
   double _getSlideTurn(int currentIndex, actualCurrentIndex) => (currentIndex < actualCurrentIndex)
       ? -pi / turns
