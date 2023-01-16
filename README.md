@@ -1,6 +1,6 @@
 A fantasy carousel slider widget; only for displaying online and local images. 
 
-<image src="https://user-images.githubusercontent.com/25709266/205978839-cadf9c98-8c09-4fb9-9dc7-e1d0d74bdd9a.gif" width=300>
+<image src="https://user-images.githubusercontent.com/25709266/212736044-0075701e-da20-4f37-9f50-27ff4f29639f.gif" width=300>
 
 ## Installation
 
@@ -40,7 +40,7 @@ Simply create a FanCarouselImageSlider widget, and pass the required params:
 Customize the FanCarouselImageSlider widget with these parameters:
 
 ```dart
-  /// List of images to be shown in the slider; Accepts two types of link.
+// List of images to be shown in the slider; Accepts two types of link.
   /// For example: `https://...jpg` for online images and `assets/...` for local images.
   final List<String> imagesLink;
 
@@ -114,4 +114,44 @@ Customize the FanCarouselImageSlider widget with these parameters:
   /// Determines whether the user can change slides by dragging or not.
   /// Defaults to true.
   final bool userCanDrag;
+
+  /// Determines box shadow of current (center) image.
+  /// Defaults to custom BoxShadwo list.
+  final List<BoxShadow>? currentItemShadow;
+
+  /// Determines box shadow of sides image.
+  /// Defaults to null.
+  final List<BoxShadow>? sideItemsShadow;
+
+  /// Determines whether the image should be clickable or not.
+  /// Defaults to true
+  final bool isClickable;
+
+  /// Set as the width of the expanded image.
+  /// Defaults to MediaQuery.of(context).size.width * 0.9)
+  final double? expandImageWidth;
+
+  /// Set as the height of the expanded image.
+  /// Defaults to MediaQuery.of(context).size.height * 0.8
+  final double? expandImageHeight;
+
+  /// Determines the value of the [fit] property of the expanded image
+  /// Defaults to BoxFit.cover.
+  final BoxFit expandedImageFitMode;
+
+  /// Determines the alignment of the close button for the expanded image
+  /// Defaults to Alignment.bottomLeft
+  final AlignmentGeometry expandedCloseBtnAlign;
+
+  /// Defines a widget for the close button of the expanded image.
+  /// It can be null and the default close button will be shown.
+  final Widget? expandedCloseBtn;
+
+  /// Determines the widget in the default close button container
+  /// Defaults to arrow_back_ios_rounded icon
+  final Widget expandedCloseChild;
+
+  /// Determines the style of the expanded image's close button container.
+  /// It can be null then the default style will be applied.
+  final BoxDecoration? expandedCloseBtnDecoration;
 ```
