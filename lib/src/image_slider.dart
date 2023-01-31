@@ -46,7 +46,7 @@ class FanCarouselImageSlider extends StatefulWidget {
         )),
     this.expandedCloseBtnDecoration,
   })  : assert(imagesLink.length > 0),
-        assert(initalPageIndex < (imagesLink.length - 1) && initalPageIndex > 0);
+        assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0);
 
   /// List of images to be shown in the slider; Accepts two types of link.
   /// For example: `https://...jpg` for online images and `assets/...` for local images.

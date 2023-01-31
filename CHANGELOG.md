@@ -1,3 +1,6 @@
+## 0.1.2
+* Solve issue related to list size and initial page index, now image list size can be greater equals 1.
+
 ## 0.1.1
 
 * Add slide clickabe feature, The image will expand with an animation.
