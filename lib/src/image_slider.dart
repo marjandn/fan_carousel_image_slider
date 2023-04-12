@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fan_carousel_image_slider/src/models/indicator_type.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/arrow_navs.dart';
@@ -22,6 +23,9 @@ class FanCarouselImageSlider extends StatefulWidget {
     this.imageFitMode = BoxFit.cover,
     this.slideViewportFraction = 0.7,
     this.sliderDuration = const Duration(milliseconds: 600),
+    this.activeIndicatorType = IndicatorType.circular,
+    this.indicatorType = IndicatorType.circular,
+    this.indicatorSize = 10,
     this.indicatorActiveColor = Colors.pink,
     this.indicatorDeactiveColor = Colors.grey,
     this.autoPlayInterval = const Duration(milliseconds: 3000),
@@ -92,6 +96,18 @@ class FanCarouselImageSlider extends StatefulWidget {
   /// This Duration type value, use for all animations in [FanCarouselImageSlider].
   /// Defaults to Duration(milliseconds: 600).
   final Duration sliderDuration;
+
+  /// Determines the type of Indicator.
+  /// Defaults to IndicatorType.circular.
+  final IndicatorType activeIndicatorType;
+
+  /// Determines the type of Indicator.
+  /// Defaults to IndicatorType.circular.
+  final IndicatorType indicatorType;
+
+  /// Determines the size of Indicator.
+  /// Defaults to 10.
+  final double indicatorSize;
 
   /// Determines the visibility of the indicators below slider.
   /// Defaults to true
@@ -318,7 +334,10 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
                 child: ValueListenableBuilder(
                   valueListenable: _currentIndex,
                   builder: (context, value, child) => IndicatorsWidget(
-                    indicatorActiveColor: widget.indicatorActiveColor,
+                    activeIndicatorType: widget.activeIndicatorType,
+                    indicatorType: widget.indicatorType,
+                    indicatorSize: widget.indicatorSize,
+                    activeIndicatorColor: widget.indicatorActiveColor,
                     indicatorDeactiveColor: widget.indicatorDeactiveColor,
                     sliderDuration: widget.sliderDuration,
                     imagesLink: widget.imagesLink,

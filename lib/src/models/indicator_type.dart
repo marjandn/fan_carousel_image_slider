@@ -1,0 +1,4 @@
+enum IndicatorType {
+  circular,
+  linear
+}
