@@ -26,7 +26,7 @@ class FanCarouselImageSlider extends StatefulWidget {
     this.activeIndicatorType = IndicatorType.circular,
     this.indicatorType = IndicatorType.circular,
     this.indicatorSize = 10,
-    this.indicatorActiveColor = Colors.pink,
+    this.indicatorActiveColor,
     this.indicatorDeactiveColor = Colors.grey,
     this.autoPlayInterval = const Duration(milliseconds: 3000),
     this.autoPlay = true,
@@ -118,8 +118,8 @@ class FanCarouselImageSlider extends StatefulWidget {
   final bool showArrowNav;
 
   /// Determines the color of the active indicator below slider.
-  /// Defaults to Colors.pink.
-  final Color indicatorActiveColor;
+  /// Defaults to Theme.of(context).primaryColor.
+  final Color? indicatorActiveColor;
 
   /// Determines the color of the border of the deactive indicators below slider.
   /// Defaults to Colors.grey.
@@ -337,7 +337,7 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
                     activeIndicatorType: widget.activeIndicatorType,
                     indicatorType: widget.indicatorType,
                     indicatorSize: widget.indicatorSize,
-                    activeIndicatorColor: widget.indicatorActiveColor,
+                    activeIndicatorColor: widget.indicatorActiveColor ?? Theme.of(context).primaryColor,
                     indicatorDeactiveColor: widget.indicatorDeactiveColor,
                     sliderDuration: widget.sliderDuration,
                     imagesLink: widget.imagesLink,
