@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:fan_carousel_image_slider/src/models/indicator_type.dart';
+import 'package:fan_carousel_image_slider/src/models/fan_carousel_button_alignment_type.dart';
+import 'package:fan_carousel_image_slider/src/models/fan_carousel_indicator_type.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/arrow_navs.dart';
@@ -23,8 +24,8 @@ class FanCarouselImageSlider extends StatefulWidget {
     this.imageFitMode = BoxFit.cover,
     this.slideViewportFraction = 0.7,
     this.sliderDuration = const Duration(milliseconds: 600),
-    this.activeIndicatorType = IndicatorType.circular,
-    this.indicatorType = IndicatorType.circular,
+    this.activeIndicatorType = FanCarouselIndicatorType.circular,
+    this.indicatorType = FanCarouselIndicatorType.circular,
     this.indicatorSize = 10,
     this.indicatorActiveColor,
     this.indicatorDeactiveColor = Colors.grey,
@@ -40,7 +41,7 @@ class FanCarouselImageSlider extends StatefulWidget {
     this.expandImageWidth,
     this.expandImageHeight,
     this.expandedImageFitMode = BoxFit.cover,
-    this.expandedCloseBtnAlign = Alignment.bottomLeft,
+    this.expandedCloseBtnAlignmentType = FanCarouselButtonAlignmentType.bottomLeft,
     this.expandedCloseBtn,
     this.expandedCloseChild = const Padding(
         padding: EdgeInsets.symmetric(horizontal: 45, vertical: 20),
@@ -49,6 +50,7 @@ class FanCarouselImageSlider extends StatefulWidget {
           color: Colors.black,
         )),
     this.expandedCloseBtnDecoration,
+    this.fullScreenInExpandMode = false,
   })  : assert(imagesLink.length > 0),
         assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0);
 
@@ -99,11 +101,11 @@ class FanCarouselImageSlider extends StatefulWidget {
 
   /// Determines the type of Indicator.
   /// Defaults to IndicatorType.circular.
-  final IndicatorType activeIndicatorType;
+  final FanCarouselIndicatorType activeIndicatorType;
 
   /// Determines the type of Indicator.
   /// Defaults to IndicatorType.circular.
-  final IndicatorType indicatorType;
+  final FanCarouselIndicatorType indicatorType;
 
   /// Determines the size of Indicator.
   /// Defaults to 10.
@@ -165,7 +167,7 @@ class FanCarouselImageSlider extends StatefulWidget {
 
   /// Determines the alignment of the close button for the expanded image
   /// Defaults to Alignment.bottomLeft
-  final AlignmentGeometry expandedCloseBtnAlign;
+  final FanCarouselButtonAlignmentType expandedCloseBtnAlignmentType;
 
   /// Defines a widget for the close button of the expanded image.
   /// It can be null and the default close button will be shown.
@@ -178,6 +180,10 @@ class FanCarouselImageSlider extends StatefulWidget {
   /// Determines the style of the expanded image's close button container.
   /// It can be null then the default style will be applied.
   final BoxDecoration? expandedCloseBtnDecoration;
+
+  /// Determines image's are in full screen in expand mode.
+  /// Defaults to false.
+  final bool fullScreenInExpandMode;
 
   @override
   State<FanCarouselImageSlider> createState() => _FanCarouselImageSliderState();
@@ -197,6 +203,44 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
   _autoPlayeTimerStart() {
     _timer?.cancel();
     _timer = Timer.periodic(widget.autoPlayInterval, (_) => _goNextPage());
+  }
+
+  Alignment get _expandedCloseBtnAlignmentType {
+    switch (widget.expandedCloseBtnAlignmentType) {
+      case FanCarouselButtonAlignmentType.topLeft:
+        return Alignment.topLeft;
+      case FanCarouselButtonAlignmentType.topRight:
+        return Alignment.topRight;
+      case FanCarouselButtonAlignmentType.bottomLeft:
+        return Alignment.bottomLeft;
+      case FanCarouselButtonAlignmentType.bottomRight:
+        return Alignment.bottomRight;
+    }
+  }
+
+  BorderRadius get _closeBtnBorderRadius {
+    switch (widget.expandedCloseBtnAlignmentType) {
+      case FanCarouselButtonAlignmentType.topLeft:
+        return BorderRadius.only(
+          bottomRight: Radius.circular(widget.imageRadius),
+          topLeft: Radius.circular(widget.imageRadius),
+        );
+      case FanCarouselButtonAlignmentType.topRight:
+        return BorderRadius.only(
+          bottomLeft: Radius.circular(widget.imageRadius),
+          topRight: Radius.circular(widget.imageRadius),
+        );
+      case FanCarouselButtonAlignmentType.bottomLeft:
+        return BorderRadius.only(
+          bottomLeft: Radius.circular(widget.imageRadius),
+          topRight: Radius.circular(widget.imageRadius),
+        );
+      case FanCarouselButtonAlignmentType.bottomRight:
+        return BorderRadius.only(
+          bottomRight: Radius.circular(widget.imageRadius),
+          topLeft: Radius.circular(widget.imageRadius),
+        );
+    }
   }
 
   @override
@@ -233,16 +277,16 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
               if (widget.autoPlay) (isExpand) ? _timer?.cancel() : _autoPlayeTimerStart();
               expandedImage = (isExpand) ? widget.imagesLink[_currentIndex.value] : null;
               return AnimatedContainer(
-                  margin: const EdgeInsets.only(top: 15),
+                  // margin: const EdgeInsets.only(top: 15),
                   duration: widget.sliderDuration,
-                  width: (!isExpand)
-                      ? 100
-                      : (widget.expandImageWidth ?? MediaQuery.of(context).size.width * 0.9),
-                  height: (!isExpand)
-                      ? 0
-                      : (widget.expandImageHeight ?? (MediaQuery.of(context).size.height * 0.8)),
+                  // width: (!isExpand)
+                  //     ? 100
+                  //     : (widget.expandImageWidth ?? MediaQuery.of(context).size.width * 0.9),
+                  // height: (!isExpand)
+                  //     ? 0
+                  //     : (widget.expandImageHeight ?? (MediaQuery.of(context).size.height * 0.8)),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(widget.imageRadius),
+                    borderRadius: !widget.fullScreenInExpandMode ? BorderRadius.circular(widget.imageRadius) : null,
                     image: (expandedImage != null)
                         ? DecorationImage(
                             image: (!widget.isAssets)
@@ -255,7 +299,7 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
                   child: Visibility(visible: isExpand, child: child!));
             },
             child: Align(
-              alignment: widget.expandedCloseBtnAlign,
+              alignment: _expandedCloseBtnAlignmentType,
               child: InkWell(
                 onTap: () => _isExpandSlide.value = false,
                 child: widget.expandedCloseBtn ??
@@ -263,10 +307,7 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
                         decoration: widget.expandedCloseBtnDecoration ??
                             BoxDecoration(
                               color: const Color.fromARGB(169, 255, 255, 255),
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(widget.imageRadius),
-                                topRight: Radius.circular(widget.imageRadius),
-                              ),
+                              borderRadius: !widget.fullScreenInExpandMode ? _closeBtnBorderRadius : null,
                             ),
                         child: widget.expandedCloseChild),
               ),

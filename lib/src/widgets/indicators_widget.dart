@@ -1,4 +1,4 @@
-import 'package:fan_carousel_image_slider/src/models/indicator_type.dart';
+import 'package:fan_carousel_image_slider/src/models/fan_carousel_indicator_type.dart';
 import 'package:flutter/material.dart';
 
 class IndicatorsWidget extends StatelessWidget {
@@ -14,8 +14,8 @@ class IndicatorsWidget extends StatelessWidget {
     required this.actualIndex,
   });
 
-  final IndicatorType activeIndicatorType;
-  final IndicatorType indicatorType;
+  final FanCarouselIndicatorType activeIndicatorType;
+  final FanCarouselIndicatorType indicatorType;
   final double indicatorSize;
   final int actualIndex;
   final Duration sliderDuration;
@@ -29,9 +29,9 @@ class IndicatorsWidget extends StatelessWidget {
 
   double get _activeIndicatorSizeWidth {
     switch (activeIndicatorType) {
-      case IndicatorType.circular:
+      case FanCarouselIndicatorType.circular:
         return indicatorSize;
-      case IndicatorType.linear:
+      case FanCarouselIndicatorType.linear:
         return indicatorSize * 2;
     }
   }
@@ -42,9 +42,9 @@ class IndicatorsWidget extends StatelessWidget {
 
   double get _indicatorSizeWidth {
     switch (indicatorType) {
-      case IndicatorType.circular:
+      case FanCarouselIndicatorType.circular:
         return indicatorSize;
-      case IndicatorType.linear:
+      case FanCarouselIndicatorType.linear:
         return indicatorSize * 2;
     }
   }
