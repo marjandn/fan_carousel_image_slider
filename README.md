@@ -141,7 +141,7 @@ Customize the FanCarouselImageSlider widget with these parameters:
 
   /// Determines the alignment of the close button for the expanded image
   /// Defaults to Alignment.bottomLeft
-  final AlignmentGeometry expandedCloseBtnAlign;
+  final FanCarouselButtonAlignmentType expandedCloseBtnAlignmentType;
 
   /// Defines a widget for the close button of the expanded image.
   /// It can be null and the default close button will be shown.
@@ -154,4 +154,12 @@ Customize the FanCarouselImageSlider widget with these parameters:
   /// Determines the style of the expanded image's close button container.
   /// It can be null then the default style will be applied.
   final BoxDecoration? expandedCloseBtnDecoration;
+
+  /// Determines image's are in full screen in expand mode.
+  /// Defaults to false.
+  final bool fullScreenInExpandMode;
+
+  /// Determines back button function in expand mode.
+  /// Defaults to null.
+  final Function? backButtonOnTapInExpandMode;
 ```

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:fan_carousel_image_slider/src/models/fan_carousel_button_alignment_type.dart';
+import 'package:fan_carousel_image_slider/src/models/fan_carousel_indicator_type.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/arrow_navs.dart';
@@ -22,7 +24,10 @@ class FanCarouselImageSlider extends StatefulWidget {
     this.imageFitMode = BoxFit.cover,
     this.slideViewportFraction = 0.7,
     this.sliderDuration = const Duration(milliseconds: 600),
-    this.indicatorActiveColor = Colors.pink,
+    this.activeIndicatorType = FanCarouselIndicatorType.circular,
+    this.indicatorType = FanCarouselIndicatorType.circular,
+    this.indicatorSize = 10,
+    this.indicatorActiveColor,
     this.indicatorDeactiveColor = Colors.grey,
     this.autoPlayInterval = const Duration(milliseconds: 3000),
     this.autoPlay = true,
@@ -36,7 +41,7 @@ class FanCarouselImageSlider extends StatefulWidget {
     this.expandImageWidth,
     this.expandImageHeight,
     this.expandedImageFitMode = BoxFit.cover,
-    this.expandedCloseBtnAlign = Alignment.bottomLeft,
+    this.expandedCloseBtnAlignmentType = FanCarouselButtonAlignmentType.bottomLeft,
     this.expandedCloseBtn,
     this.expandedCloseChild = const Padding(
         padding: EdgeInsets.symmetric(horizontal: 45, vertical: 20),
@@ -45,6 +50,8 @@ class FanCarouselImageSlider extends StatefulWidget {
           color: Colors.black,
         )),
     this.expandedCloseBtnDecoration,
+    this.fullScreenInExpandMode = false,
+    this.backButtonOnTapInExpandMode,
   })  : assert(imagesLink.length > 0),
         assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0);
 
@@ -93,6 +100,18 @@ class FanCarouselImageSlider extends StatefulWidget {
   /// Defaults to Duration(milliseconds: 600).
   final Duration sliderDuration;
 
+  /// Determines the type of Indicator.
+  /// Defaults to IndicatorType.circular.
+  final FanCarouselIndicatorType activeIndicatorType;
+
+  /// Determines the type of Indicator.
+  /// Defaults to IndicatorType.circular.
+  final FanCarouselIndicatorType indicatorType;
+
+  /// Determines the size of Indicator.
+  /// Defaults to 10.
+  final double indicatorSize;
+
   /// Determines the visibility of the indicators below slider.
   /// Defaults to true
   final bool showIndicator;
@@ -102,8 +121,8 @@ class FanCarouselImageSlider extends StatefulWidget {
   final bool showArrowNav;
 
   /// Determines the color of the active indicator below slider.
-  /// Defaults to Colors.pink.
-  final Color indicatorActiveColor;
+  /// Defaults to Theme.of(context).primaryColor.
+  final Color? indicatorActiveColor;
 
   /// Determines the color of the border of the deactive indicators below slider.
   /// Defaults to Colors.grey.
@@ -149,7 +168,7 @@ class FanCarouselImageSlider extends StatefulWidget {
 
   /// Determines the alignment of the close button for the expanded image
   /// Defaults to Alignment.bottomLeft
-  final AlignmentGeometry expandedCloseBtnAlign;
+  final FanCarouselButtonAlignmentType expandedCloseBtnAlignmentType;
 
   /// Defines a widget for the close button of the expanded image.
   /// It can be null and the default close button will be shown.
@@ -162,6 +181,14 @@ class FanCarouselImageSlider extends StatefulWidget {
   /// Determines the style of the expanded image's close button container.
   /// It can be null then the default style will be applied.
   final BoxDecoration? expandedCloseBtnDecoration;
+
+  /// Determines image's are in full screen in expand mode.
+  /// Defaults to false.
+  final bool fullScreenInExpandMode;
+
+  /// Determines back button function in expand mode.
+  /// Defaults to null.
+  final Function? backButtonOnTapInExpandMode;
 
   @override
   State<FanCarouselImageSlider> createState() => _FanCarouselImageSliderState();
@@ -181,6 +208,30 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
   _autoPlayeTimerStart() {
     _timer?.cancel();
     _timer = Timer.periodic(widget.autoPlayInterval, (_) => _goNextPage());
+  }
+
+  Alignment get _expandedCloseBtnAlignmentType {
+    switch (widget.expandedCloseBtnAlignmentType) {
+      case FanCarouselButtonAlignmentType.bottomLeft:
+        return Alignment.bottomLeft;
+      case FanCarouselButtonAlignmentType.bottomRight:
+        return Alignment.bottomRight;
+    }
+  }
+
+  BorderRadius get _closeBtnBorderRadius {
+    switch (widget.expandedCloseBtnAlignmentType) {
+      case FanCarouselButtonAlignmentType.bottomLeft:
+        return BorderRadius.only(
+          bottomLeft: Radius.circular(widget.imageRadius),
+          topRight: Radius.circular(widget.imageRadius),
+        );
+      case FanCarouselButtonAlignmentType.bottomRight:
+        return BorderRadius.only(
+          bottomRight: Radius.circular(widget.imageRadius),
+          topLeft: Radius.circular(widget.imageRadius),
+        );
+    }
   }
 
   @override
@@ -211,48 +262,50 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
       children: [
         Align(
           alignment: Alignment.topCenter,
-          child: ValueListenableBuilder<bool>(
-            valueListenable: _isExpandSlide,
-            builder: (context, isExpand, child) {
-              if (widget.autoPlay) (isExpand) ? _timer?.cancel() : _autoPlayeTimerStart();
-              expandedImage = (isExpand) ? widget.imagesLink[_currentIndex.value] : null;
-              return AnimatedContainer(
-                  margin: const EdgeInsets.only(top: 15),
-                  duration: widget.sliderDuration,
-                  width: (!isExpand)
-                      ? 100
-                      : (widget.expandImageWidth ?? MediaQuery.of(context).size.width * 0.9),
-                  height: (!isExpand)
-                      ? 0
-                      : (widget.expandImageHeight ?? (MediaQuery.of(context).size.height * 0.8)),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(widget.imageRadius),
-                    image: (expandedImage != null)
-                        ? DecorationImage(
-                            image: (!widget.isAssets)
-                                ? NetworkImage(expandedImage!)
-                                : AssetImage(expandedImage!) as ImageProvider,
-                            fit: widget.expandedImageFitMode,
-                          )
-                        : null,
-                  ),
-                  child: Visibility(visible: isExpand, child: child!));
-            },
-            child: Align(
-              alignment: widget.expandedCloseBtnAlign,
-              child: InkWell(
-                onTap: () => _isExpandSlide.value = false,
-                child: widget.expandedCloseBtn ??
-                    Container(
-                        decoration: widget.expandedCloseBtnDecoration ??
-                            BoxDecoration(
-                              color: const Color.fromARGB(169, 255, 255, 255),
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(widget.imageRadius),
-                                topRight: Radius.circular(widget.imageRadius),
+          child: WillPopScope(
+            onWillPop: () async => widget.backButtonOnTapInExpandMode != null ? widget.backButtonOnTapInExpandMode!() : _isExpandSlide.value = false,
+            child: ValueListenableBuilder<bool>(
+              valueListenable: _isExpandSlide,
+              builder: (context, isExpand, child) {
+                if (widget.autoPlay) (isExpand) ? _timer?.cancel() : _autoPlayeTimerStart();
+                expandedImage = (isExpand) ? widget.imagesLink[_currentIndex.value] : null;
+                return AnimatedContainer(
+                    margin: !widget.fullScreenInExpandMode ? EdgeInsets.all(15.0) : null,
+                    duration: widget.sliderDuration,
+                    width: (!isExpand)
+                        ? 100
+                        : (widget.expandImageWidth ?? MediaQuery.of(context).size.width * 1.0),
+                    height: (!isExpand)
+                        ? 0
+                        : (widget.expandImageHeight ?? (MediaQuery.of(context).size.height * 1.0)),
+                    decoration: BoxDecoration(
+                      borderRadius: !widget.fullScreenInExpandMode ? BorderRadius.circular(widget.imageRadius) : null,
+                      image: (expandedImage != null)
+                          ? DecorationImage(
+                              image: (!widget.isAssets)
+                                  ? NetworkImage(expandedImage!)
+                                  : AssetImage(expandedImage!) as ImageProvider,
+                              fit: widget.expandedImageFitMode,
+                            )
+                          : null,
+                    ),
+                    child: Visibility(visible: isExpand, child: child!));
+              },
+              child: Align(
+                alignment: _expandedCloseBtnAlignmentType,
+                child: InkWell(
+                  onTap: () {
+                    _isExpandSlide.value = false;
+                  },
+                  child: widget.expandedCloseBtn ??
+                      Container(
+                          decoration: widget.expandedCloseBtnDecoration ??
+                              BoxDecoration(
+                                color: const Color.fromARGB(169, 255, 255, 255),
+                                borderRadius: !widget.fullScreenInExpandMode ? _closeBtnBorderRadius : null,
                               ),
-                            ),
-                        child: widget.expandedCloseChild),
+                          child: widget.expandedCloseChild),
+                ),
               ),
             ),
           ),
@@ -318,7 +371,10 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
                 child: ValueListenableBuilder(
                   valueListenable: _currentIndex,
                   builder: (context, value, child) => IndicatorsWidget(
-                    indicatorActiveColor: widget.indicatorActiveColor,
+                    activeIndicatorType: widget.activeIndicatorType,
+                    indicatorType: widget.indicatorType,
+                    indicatorSize: widget.indicatorSize,
+                    activeIndicatorColor: widget.indicatorActiveColor ?? Theme.of(context).primaryColor,
                     indicatorDeactiveColor: widget.indicatorDeactiveColor,
                     sliderDuration: widget.sliderDuration,
                     imagesLink: widget.imagesLink,

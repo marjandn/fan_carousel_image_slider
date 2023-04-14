@@ -1,0 +1,4 @@
+enum FanCarouselButtonAlignmentType {
+  bottomLeft,
+  bottomRight
+}

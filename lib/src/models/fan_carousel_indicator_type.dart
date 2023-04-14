@@ -1,0 +1,4 @@
+enum FanCarouselIndicatorType {
+  circular,
+  linear
+}
