@@ -51,6 +51,7 @@ class FanCarouselImageSlider extends StatefulWidget {
         )),
     this.expandedCloseBtnDecoration,
     this.fullScreenInExpandMode = false,
+    this.backButtonOnTapInExpandMode,
   })  : assert(imagesLink.length > 0),
         assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0);
 
@@ -185,6 +186,10 @@ class FanCarouselImageSlider extends StatefulWidget {
   /// Defaults to false.
   final bool fullScreenInExpandMode;
 
+  /// Determines back button function in expand mode.
+  /// Defaults to null.
+  final Function? backButtonOnTapInExpandMode;
+
   @override
   State<FanCarouselImageSlider> createState() => _FanCarouselImageSliderState();
 }
@@ -207,10 +212,6 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
 
   Alignment get _expandedCloseBtnAlignmentType {
     switch (widget.expandedCloseBtnAlignmentType) {
-      case FanCarouselButtonAlignmentType.topLeft:
-        return Alignment.topLeft;
-      case FanCarouselButtonAlignmentType.topRight:
-        return Alignment.topRight;
       case FanCarouselButtonAlignmentType.bottomLeft:
         return Alignment.bottomLeft;
       case FanCarouselButtonAlignmentType.bottomRight:
@@ -220,16 +221,6 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
 
   BorderRadius get _closeBtnBorderRadius {
     switch (widget.expandedCloseBtnAlignmentType) {
-      case FanCarouselButtonAlignmentType.topLeft:
-        return BorderRadius.only(
-          bottomRight: Radius.circular(widget.imageRadius),
-          topLeft: Radius.circular(widget.imageRadius),
-        );
-      case FanCarouselButtonAlignmentType.topRight:
-        return BorderRadius.only(
-          bottomLeft: Radius.circular(widget.imageRadius),
-          topRight: Radius.circular(widget.imageRadius),
-        );
       case FanCarouselButtonAlignmentType.bottomLeft:
         return BorderRadius.only(
           bottomLeft: Radius.circular(widget.imageRadius),
@@ -271,45 +262,50 @@ class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
       children: [
         Align(
           alignment: Alignment.topCenter,
-          child: ValueListenableBuilder<bool>(
-            valueListenable: _isExpandSlide,
-            builder: (context, isExpand, child) {
-              if (widget.autoPlay) (isExpand) ? _timer?.cancel() : _autoPlayeTimerStart();
-              expandedImage = (isExpand) ? widget.imagesLink[_currentIndex.value] : null;
-              return AnimatedContainer(
-                  // margin: const EdgeInsets.only(top: 15),
-                  duration: widget.sliderDuration,
-                  // width: (!isExpand)
-                  //     ? 100
-                  //     : (widget.expandImageWidth ?? MediaQuery.of(context).size.width * 0.9),
-                  // height: (!isExpand)
-                  //     ? 0
-                  //     : (widget.expandImageHeight ?? (MediaQuery.of(context).size.height * 0.8)),
-                  decoration: BoxDecoration(
-                    borderRadius: !widget.fullScreenInExpandMode ? BorderRadius.circular(widget.imageRadius) : null,
-                    image: (expandedImage != null)
-                        ? DecorationImage(
-                            image: (!widget.isAssets)
-                                ? NetworkImage(expandedImage!)
-                                : AssetImage(expandedImage!) as ImageProvider,
-                            fit: widget.expandedImageFitMode,
-                          )
-                        : null,
-                  ),
-                  child: Visibility(visible: isExpand, child: child!));
-            },
-            child: Align(
-              alignment: _expandedCloseBtnAlignmentType,
-              child: InkWell(
-                onTap: () => _isExpandSlide.value = false,
-                child: widget.expandedCloseBtn ??
-                    Container(
-                        decoration: widget.expandedCloseBtnDecoration ??
-                            BoxDecoration(
-                              color: const Color.fromARGB(169, 255, 255, 255),
-                              borderRadius: !widget.fullScreenInExpandMode ? _closeBtnBorderRadius : null,
-                            ),
-                        child: widget.expandedCloseChild),
+          child: WillPopScope(
+            onWillPop: () async => widget.backButtonOnTapInExpandMode != null ? widget.backButtonOnTapInExpandMode!() : _isExpandSlide.value = false,
+            child: ValueListenableBuilder<bool>(
+              valueListenable: _isExpandSlide,
+              builder: (context, isExpand, child) {
+                if (widget.autoPlay) (isExpand) ? _timer?.cancel() : _autoPlayeTimerStart();
+                expandedImage = (isExpand) ? widget.imagesLink[_currentIndex.value] : null;
+                return AnimatedContainer(
+                    margin: !widget.fullScreenInExpandMode ? EdgeInsets.all(15.0) : null,
+                    duration: widget.sliderDuration,
+                    width: (!isExpand)
+                        ? 100
+                        : (widget.expandImageWidth ?? MediaQuery.of(context).size.width * 1.0),
+                    height: (!isExpand)
+                        ? 0
+                        : (widget.expandImageHeight ?? (MediaQuery.of(context).size.height * 1.0)),
+                    decoration: BoxDecoration(
+                      borderRadius: !widget.fullScreenInExpandMode ? BorderRadius.circular(widget.imageRadius) : null,
+                      image: (expandedImage != null)
+                          ? DecorationImage(
+                              image: (!widget.isAssets)
+                                  ? NetworkImage(expandedImage!)
+                                  : AssetImage(expandedImage!) as ImageProvider,
+                              fit: widget.expandedImageFitMode,
+                            )
+                          : null,
+                    ),
+                    child: Visibility(visible: isExpand, child: child!));
+              },
+              child: Align(
+                alignment: _expandedCloseBtnAlignmentType,
+                child: InkWell(
+                  onTap: () {
+                    _isExpandSlide.value = false;
+                  },
+                  child: widget.expandedCloseBtn ??
+                      Container(
+                          decoration: widget.expandedCloseBtnDecoration ??
+                              BoxDecoration(
+                                color: const Color.fromARGB(169, 255, 255, 255),
+                                borderRadius: !widget.fullScreenInExpandMode ? _closeBtnBorderRadius : null,
+                              ),
+                          child: widget.expandedCloseChild),
+                ),
               ),
             ),
           ),
