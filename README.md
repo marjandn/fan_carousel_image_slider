@@ -1,6 +1,10 @@
-A fantasy carousel slider widget; only for displaying online and local images. 
+A fantasy carousel slider widget; only for displaying online and local images. You can use it with two different types accessible with two named constructors:
 
-<image src="https://user-images.githubusercontent.com/25709266/212736044-0075701e-da20-4f37-9f50-27ff4f29639f.gif" width=300>
+## Type 1 Demo:
+<image src="https://github.com/marjandn/fan_carousel_image_slider/assets/25709266/299aa39e-bab0-4df2-98cb-8c039fa1ab7b" width=300>
+
+## Type 2 Demo:
+<image src="https://github.com/marjandn/fan_carousel_image_slider/assets/25709266/510b63d9-48c4-4e6a-ac9f-5fd345483391" width=300>
 
 ## Installation
 
@@ -25,22 +29,39 @@ Simply create a FanCarouselImageSlider widget, and pass the required params:
 
 ```dart
   static const List<String> sampleImages = [
-    "https://images.unsplash.com/photo-1557700836-25f2464e845d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80",
-    "https://images.unsplash.com/photo-1669462277329-f32f928a4a79?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
-    "https://images.unsplash.com/photo-1542840410-3092f99611a3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
+    'https://img.freepik.com/free-photo/lovely-woman-vintage-outfit-expressing-interest-outdoor-shot-glamorous-happy-girl-sunglasses_197531-11312.jpg',
+    'https://img.freepik.com/free-photo/shapely-woman-vintage-dress-touching-her-glasses-outdoor-shot-interested-relaxed-girl-brown-outfit_197531-11308.jpg',
+    'https://img.freepik.com/premium-photo/cheerful-lady-brown-outfit-looking-around-outdoor-portrait-fashionable-caucasian-model-with-short-wavy-hairstyle_197531-25791.jpg',
   ];
 
-  FanCarouselImageSlider(
-            imagesLink: sampleImages,
-            isAssets: false,
-          )
+  // Type 1 
+  FanCarouselImageSlider.sliderType1(
+              imagesLink: sampleImages,
+              isAssets: false,
+              autoPlay: false,
+              sliderHeight: 400,
+              showIndicator: true,
+            ),
+
+  // Type 2
+  FanCarouselImageSlider.sliderType2(
+              imagesLink: sampleImages,
+              isAssets: false,
+              autoPlay: false,
+              sliderHeight: 300,
+              currentItemShadow: const [],
+              sliderDuration: const Duration(milliseconds: 200),
+              imageRadius: 0,
+              slideViewportFraction: 1.2,
+            ),
 ```
 
 ## Customization
 Customize the FanCarouselImageSlider widget with these parameters:
 
 ```dart
-// List of images to be shown in the slider; Accepts two types of link.
+
+  /// List of images to be shown in the slider; Accepts two types of link.
   /// For example: `https://...jpg` for online images and `assets/...` for local images.
   final List<String> imagesLink;
 
@@ -66,6 +87,7 @@ Customize the FanCarouselImageSlider widget with these parameters:
   final double imageRadius;
 
   /// Determines the relative rotation of the sides images.
+  /// Used only for [ImageSliderType.imageSliderType1]
   /// Defaults to 250.
   final double turns;
 
@@ -86,10 +108,12 @@ Customize the FanCarouselImageSlider widget with these parameters:
   final Duration sliderDuration;
 
   /// Determines the visibility of the indicators below slider.
+  /// Used only for [ImageSliderType.imageSliderType1]
   /// Defaults to true
   final bool showIndicator;
 
   /// Determines the visibility of the arrows below slider.
+  /// Used only for [ImageSliderType.imageSliderType1]
   /// Defaults to false.
   final bool showArrowNav;
 
