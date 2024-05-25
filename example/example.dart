@@ -53,7 +53,7 @@ class HomePage extends StatelessWidget {
               height: 30,
             ),
             const Text(
-              'FanCarouselImageSlider Type1:',
+              'FanCarouselImageSlider Type2:',
               style: TextStyle(fontSize: 20),
             ),
             FanCarouselImageSlider.sliderType2(
