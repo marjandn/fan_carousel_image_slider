@@ -1,13 +1,11 @@
-import 'dart:async';
-
+import 'package:fan_carousel_image_slider/src/enums/slider_type.dart';
+import 'package:fan_carousel_image_slider/src/sliders/image_slider_type_1_widget.dart';
 import 'package:flutter/material.dart';
 
-import 'widgets/arrow_navs.dart';
-import 'widgets/indicators_widget.dart';
-import 'widgets/slide_widget.dart';
+import 'sliders/image_slider_type_2_widget.dart';
 
-class FanCarouselImageSlider extends StatefulWidget {
-  const FanCarouselImageSlider({
+class FanCarouselImageSlider extends StatelessWidget {
+  const FanCarouselImageSlider.sliderType1({
     super.key,
     required this.imagesLink,
     required this.isAssets,
@@ -28,8 +26,8 @@ class FanCarouselImageSlider extends StatefulWidget {
     this.autoPlay = true,
     this.userCanDrag = true,
     this.currentItemShadow = const [
-      BoxShadow(offset: Offset(1, 1), color: Colors.grey, blurRadius: 10),
-      BoxShadow(offset: Offset(-1, -1), color: Colors.grey, blurRadius: 10),
+      BoxShadow(offset: Offset(1, 1), color: Color.fromARGB(78, 158, 158, 158), blurRadius: 10),
+      BoxShadow(offset: Offset(-1, -1), color: Color.fromARGB(78, 158, 158, 158), blurRadius: 10),
     ],
     this.sideItemsShadow,
     this.isClickable = true,
@@ -46,7 +44,50 @@ class FanCarouselImageSlider extends StatefulWidget {
         )),
     this.expandedCloseBtnDecoration,
   })  : assert(imagesLink.length > 0),
-        assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0);
+        assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0),
+        imageSliderType = ImageSliderType.imageSliderType1;
+
+  const FanCarouselImageSlider.sliderType2({
+    super.key,
+    required this.imagesLink,
+    required this.isAssets,
+    this.initalPageIndex = 1,
+    this.sliderHeight = 500,
+    this.sliderWidth = double.infinity,
+    this.sidesOpacity = 0.8,
+    this.imageRadius = 40,
+    this.imageFitMode = BoxFit.cover,
+    this.slideViewportFraction = 0.7,
+    this.sliderDuration = const Duration(milliseconds: 600),
+    this.indicatorActiveColor = Colors.pink,
+    this.indicatorDeactiveColor = Colors.grey,
+    this.autoPlayInterval = const Duration(milliseconds: 3000),
+    this.autoPlay = true,
+    this.userCanDrag = true,
+    this.currentItemShadow = const [
+      BoxShadow(offset: Offset(1, 1), color: Color.fromARGB(78, 158, 158, 158), blurRadius: 10),
+      BoxShadow(offset: Offset(-1, -1), color: Color.fromARGB(78, 158, 158, 158), blurRadius: 10),
+    ],
+    this.sideItemsShadow,
+    this.isClickable = true,
+    this.expandImageWidth,
+    this.expandImageHeight,
+    this.expandedImageFitMode = BoxFit.cover,
+    this.expandedCloseBtnAlign = Alignment.bottomLeft,
+    this.expandedCloseBtn,
+    this.expandedCloseChild = const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 45, vertical: 20),
+        child: Icon(
+          Icons.arrow_back_ios_rounded,
+          color: Colors.black,
+        )),
+    this.expandedCloseBtnDecoration,
+  })  : assert(imagesLink.length > 0),
+        assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0),
+        imageSliderType = ImageSliderType.imageSliderType2,
+        turns = 250,
+        showIndicator = true,
+        showArrowNav = false;
 
   /// List of images to be shown in the slider; Accepts two types of link.
   /// For example: `https://...jpg` for online images and `assets/...` for local images.
@@ -74,6 +115,7 @@ class FanCarouselImageSlider extends StatefulWidget {
   final double imageRadius;
 
   /// Determines the relative rotation of the sides images.
+  /// Used only for [ImageSliderType.imageSliderType1]
   /// Defaults to 250.
   final double turns;
 
@@ -94,10 +136,12 @@ class FanCarouselImageSlider extends StatefulWidget {
   final Duration sliderDuration;
 
   /// Determines the visibility of the indicators below slider.
+  /// Used only for [ImageSliderType.imageSliderType1]
   /// Defaults to true
   final bool showIndicator;
 
   /// Determines the visibility of the arrows below slider.
+  /// Used only for [ImageSliderType.imageSliderType1]
   /// Defaults to false.
   final bool showArrowNav;
 
@@ -163,198 +207,64 @@ class FanCarouselImageSlider extends StatefulWidget {
   /// It can be null then the default style will be applied.
   final BoxDecoration? expandedCloseBtnDecoration;
 
-  @override
-  State<FanCarouselImageSlider> createState() => _FanCarouselImageSliderState();
-}
-
-class _FanCarouselImageSliderState extends State<FanCarouselImageSlider> {
-  late PageController _pageController;
-  late ValueNotifier<int> _currentIndex;
-
-  final ValueNotifier<bool> _isExpandSlide = ValueNotifier<bool>(false);
-
-  bool _isAutoAnimate = false;
-  Timer? _timer;
-
-  String? expandedImage;
-
-  _autoPlayeTimerStart() {
-    _timer?.cancel();
-    _timer = Timer.periodic(widget.autoPlayInterval, (_) => _goNextPage());
-  }
+  final ImageSliderType imageSliderType;
 
   @override
-  void initState() {
-    super.initState();
-
-    _currentIndex = ValueNotifier<int>(widget.initalPageIndex);
-    _pageController = PageController(
-        initialPage: _currentIndex.value, viewportFraction: widget.slideViewportFraction);
-
-    if (widget.autoPlay) _autoPlayeTimerStart();
-  }
-
-  _disposeData() {
-    _currentIndex.dispose();
-    _timer?.cancel();
-  }
-
-  @override
-  void dispose() {
-    _disposeData();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: ValueListenableBuilder<bool>(
-            valueListenable: _isExpandSlide,
-            builder: (context, isExpand, child) {
-              if (widget.autoPlay) (isExpand) ? _timer?.cancel() : _autoPlayeTimerStart();
-              expandedImage = (isExpand) ? widget.imagesLink[_currentIndex.value] : null;
-              return AnimatedContainer(
-                  margin: const EdgeInsets.only(top: 15),
-                  duration: widget.sliderDuration,
-                  width: (!isExpand)
-                      ? 100
-                      : (widget.expandImageWidth ?? MediaQuery.of(context).size.width * 0.9),
-                  height: (!isExpand)
-                      ? 0
-                      : (widget.expandImageHeight ?? (MediaQuery.of(context).size.height * 0.8)),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(widget.imageRadius),
-                    image: (expandedImage != null)
-                        ? DecorationImage(
-                            image: (!widget.isAssets)
-                                ? NetworkImage(expandedImage!)
-                                : AssetImage(expandedImage!) as ImageProvider,
-                            fit: widget.expandedImageFitMode,
-                          )
-                        : null,
-                  ),
-                  child: Visibility(visible: isExpand, child: child!));
-            },
-            child: Align(
-              alignment: widget.expandedCloseBtnAlign,
-              child: InkWell(
-                onTap: () => _isExpandSlide.value = false,
-                child: widget.expandedCloseBtn ??
-                    Container(
-                        decoration: widget.expandedCloseBtnDecoration ??
-                            BoxDecoration(
-                              color: const Color.fromARGB(169, 255, 255, 255),
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(widget.imageRadius),
-                                topRight: Radius.circular(widget.imageRadius),
-                              ),
-                            ),
-                        child: widget.expandedCloseChild),
-              ),
-            ),
-          ),
-        ),
-        ValueListenableBuilder<bool>(
-          valueListenable: _isExpandSlide,
-          builder: (context, isExpand, child) => AnimatedOpacity(
-            opacity: (!isExpand) ? 1 : 0,
-            duration: widget.sliderDuration,
-            child: child,
-          ),
-          child: Column(
-            children: [
-              ValueListenableBuilder<int>(
-                valueListenable: _currentIndex,
-                builder: (context, actualIndex, child) => SizedBox(
-                  width: widget.sliderWidth,
-                  height: widget.sliderHeight,
-                  child: PageView.builder(
-                    physics: (widget.userCanDrag)
-                        ? const BouncingScrollPhysics()
-                        : const NeverScrollableScrollPhysics(),
-                    controller: _pageController,
-                    onPageChanged: (newIndex) {
-                      if (!_isAutoAnimate) (actualIndex < newIndex) ? _goNextPage() : _goPrevPage();
-                    },
-                    itemCount: widget.imagesLink.length,
-                    itemBuilder: (context, index) {
-                      return SlideWidget(
-                        index: index,
-                        actualIndex: actualIndex,
-                        sliderDuration: widget.sliderDuration,
-                        isAssets: widget.isAssets,
-                        imageLink: widget.imagesLink[index],
-                        imageFitMode: widget.imageFitMode,
-                        imageRadius: widget.imageRadius,
-                        sidesOpacity: widget.sidesOpacity,
-                        turns: widget.turns,
-                        currentItemShadow: widget.currentItemShadow,
-                        sideItemsShadow: widget.sideItemsShadow,
-                        onSlideClick: () {
-                          if (widget.isClickable && index == actualIndex) {
-                            _isExpandSlide.value = true;
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Visibility(
-                visible: widget.showArrowNav,
-                child: ArrawNavs(
-                  goNextPage: () => _goNextPage(),
-                  goPrevPage: () => _goPrevPage(),
-                ),
-              ),
-              Visibility(
-                visible: widget.showIndicator,
-                child: ValueListenableBuilder(
-                  valueListenable: _currentIndex,
-                  builder: (context, value, child) => IndicatorsWidget(
-                    indicatorActiveColor: widget.indicatorActiveColor,
-                    indicatorDeactiveColor: widget.indicatorDeactiveColor,
-                    sliderDuration: widget.sliderDuration,
-                    imagesLink: widget.imagesLink,
-                    actualIndex: value,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  _goNextPage() async {
-    if (_currentIndex.value < widget.imagesLink.length - 1) {
-      _currentIndex.value++;
-      _isAutoAnimate = true;
-      await _pageController.animateToPage(_currentIndex.value,
-          duration: widget.sliderDuration, curve: Curves.easeIn);
-    } else {
-      _currentIndex.value = 0;
-      _isAutoAnimate = true;
-      await _pageController.animateToPage(_currentIndex.value,
-          duration: widget.sliderDuration, curve: Curves.easeIn);
-    }
-    _isAutoAnimate = false;
-  }
-
-  _goPrevPage() async {
-    if (_currentIndex.value > 0) {
-      _currentIndex.value--;
-      _isAutoAnimate = true;
-      await _pageController.animateToPage(_currentIndex.value,
-          duration: widget.sliderDuration, curve: Curves.easeOut);
-    }
-    _isAutoAnimate = false;
-  }
+  Widget build(BuildContext context) => switch (imageSliderType) {
+        ImageSliderType.imageSliderType1 => ImageSliderType1Widget(
+            imagesLink: imagesLink,
+            isAssets: isAssets,
+            showIndicator: showIndicator,
+            showArrowNav: showArrowNav,
+            initalPageIndex: initalPageIndex,
+            sliderHeight: sliderHeight,
+            sliderWidth: sliderWidth,
+            turns: turns,
+            sidesOpacity: sidesOpacity,
+            imageRadius: imageRadius,
+            imageFitMode: imageFitMode,
+            slideViewportFraction: slideViewportFraction,
+            sliderDuration: sliderDuration,
+            indicatorActiveColor: indicatorActiveColor,
+            indicatorDeactiveColor: indicatorDeactiveColor,
+            autoPlayInterval: autoPlayInterval,
+            autoPlay: autoPlay,
+            userCanDrag: userCanDrag,
+            currentItemShadow: currentItemShadow,
+            sideItemsShadow: sideItemsShadow,
+            isClickable: isClickable,
+            expandImageWidth: expandImageWidth,
+            expandImageHeight: expandImageHeight,
+            expandedImageFitMode: expandedImageFitMode,
+            expandedCloseBtnAlign: expandedCloseBtnAlign,
+            expandedCloseBtn: expandedCloseBtn,
+            expandedCloseChild: expandedCloseChild,
+            expandedCloseBtnDecoration: expandedCloseBtnDecoration),
+        ImageSliderType.imageSliderType2 => ImageSliderType2Widget(
+            imagesLink: imagesLink,
+            isAssets: isAssets,
+            initalPageIndex: initalPageIndex,
+            sliderHeight: sliderHeight,
+            sliderWidth: sliderWidth,
+            sidesOpacity: sidesOpacity,
+            imageRadius: imageRadius,
+            imageFitMode: imageFitMode,
+            slideViewportFraction: slideViewportFraction,
+            sliderDuration: sliderDuration,
+            indicatorActiveColor: indicatorActiveColor,
+            indicatorDeactiveColor: indicatorDeactiveColor,
+            autoPlayInterval: autoPlayInterval,
+            autoPlay: autoPlay,
+            userCanDrag: userCanDrag,
+            currentItemShadow: currentItemShadow,
+            sideItemsShadow: sideItemsShadow,
+            isClickable: isClickable,
+            expandImageWidth: expandImageWidth,
+            expandImageHeight: expandImageHeight,
+            expandedImageFitMode: expandedImageFitMode,
+            expandedCloseBtnAlign: expandedCloseBtnAlign,
+            expandedCloseBtn: expandedCloseBtn,
+            expandedCloseChild: expandedCloseChild,
+            expandedCloseBtnDecoration: expandedCloseBtnDecoration),
+      };
 }
