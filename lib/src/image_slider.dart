@@ -215,7 +215,7 @@ class FanCarouselImageSlider extends StatelessWidget {
   /// Default to false
   final bool expandFitAndZoomable;
 
-  /// Determines where the indicators should display, On top of slider or bottom of that
+  /// Determines where the indicators should display, On the slider or below it
   /// Default to bottom of slider
   final bool displayIndicatorOnSlider;
 
