@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/slider_type_1/arrow_navs.dart';
@@ -37,6 +38,7 @@ class ImageSliderType1Widget extends StatefulWidget {
     required this.expandedCloseBtn,
     required this.expandedCloseChild,
     required this.expandedCloseBtnDecoration,
+    required this.expandFitAndZoomable,
   });
 
   final List<String> imagesLink;
@@ -95,6 +97,8 @@ class ImageSliderType1Widget extends StatefulWidget {
 
   final BoxDecoration? expandedCloseBtnDecoration;
 
+  final bool expandFitAndZoomable;
+
   @override
   State<ImageSliderType1Widget> createState() => _ImageSliderType1State();
 }
@@ -120,8 +124,8 @@ class _ImageSliderType1State extends State<ImageSliderType1Widget> {
     super.initState();
 
     _currentIndex = ValueNotifier<int>(widget.initalPageIndex);
-    _pageController =
-        PageController(initialPage: _currentIndex.value, viewportFraction: widget.slideViewportFraction);
+    _pageController = PageController(
+        initialPage: _currentIndex.value, viewportFraction: widget.slideViewportFraction);
 
     if (widget.autoPlay) _autoPlayeTimerStart();
   }
@@ -227,7 +231,18 @@ class _ImageSliderType1State extends State<ImageSliderType1Widget> {
                         sideItemsShadow: widget.sideItemsShadow,
                         onSlideClick: () {
                           if (widget.isClickable && index == actualIndex) {
-                            _isExpandSlide.value = true;
+                            if (widget.expandFitAndZoomable) {
+                              showImageViewer(
+                                  context,
+                                  (widget.isAssets
+                                          ? Image.asset(widget.imagesLink[index])
+                                          : Image.network(widget.imagesLink[index]))
+                                      .image, onViewerDismissed: () {
+                                _isExpandSlide.value = false;
+                              });
+                            } else {
+                              _isExpandSlide.value = true;
+                            }
                           }
                         },
                       );

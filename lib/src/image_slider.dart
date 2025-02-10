@@ -43,6 +43,7 @@ class FanCarouselImageSlider extends StatelessWidget {
           color: Colors.black,
         )),
     this.expandedCloseBtnDecoration,
+    this.expandFitAndZoomable = false,
   })  : assert(imagesLink.length > 0),
         assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0),
         imageSliderType = ImageSliderType.imageSliderType1;
@@ -82,6 +83,7 @@ class FanCarouselImageSlider extends StatelessWidget {
           color: Colors.black,
         )),
     this.expandedCloseBtnDecoration,
+    this.expandFitAndZoomable = false,
   })  : assert(imagesLink.length > 0),
         assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0),
         imageSliderType = ImageSliderType.imageSliderType2,
@@ -207,6 +209,10 @@ class FanCarouselImageSlider extends StatelessWidget {
   /// It can be null then the default style will be applied.
   final BoxDecoration? expandedCloseBtnDecoration;
 
+  /// Determines the expand tapped image mode to be zoomable and display image in the original size
+  /// Default to false
+  final bool expandFitAndZoomable;
+
   final ImageSliderType imageSliderType;
 
   @override
@@ -239,7 +245,9 @@ class FanCarouselImageSlider extends StatelessWidget {
             expandedCloseBtnAlign: expandedCloseBtnAlign,
             expandedCloseBtn: expandedCloseBtn,
             expandedCloseChild: expandedCloseChild,
-            expandedCloseBtnDecoration: expandedCloseBtnDecoration),
+            expandedCloseBtnDecoration: expandedCloseBtnDecoration,
+            expandFitAndZoomable: expandFitAndZoomable,
+          ),
         ImageSliderType.imageSliderType2 => ImageSliderType2Widget(
             imagesLink: imagesLink,
             isAssets: isAssets,
@@ -265,6 +273,8 @@ class FanCarouselImageSlider extends StatelessWidget {
             expandedCloseBtnAlign: expandedCloseBtnAlign,
             expandedCloseBtn: expandedCloseBtn,
             expandedCloseChild: expandedCloseChild,
-            expandedCloseBtnDecoration: expandedCloseBtnDecoration),
+            expandedCloseBtnDecoration: expandedCloseBtnDecoration,
+            expandFitAndZoomable: expandFitAndZoomable,
+          ),
       };
 }
