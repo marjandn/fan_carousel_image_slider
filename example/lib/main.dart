@@ -24,6 +24,9 @@ class HomePage extends StatelessWidget {
 
   static const List<String> sampleImages = [
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlct51TA7nZUpCTslUNw3feh8LaJH_Ty1-NA&s',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlct51TA7nZUpCTslUNw3feh8LaJH_Ty1-NA&s',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlct51TA7nZUpCTslUNw3feh8LaJH_Ty1-NA&s',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlct51TA7nZUpCTslUNw3feh8LaJH_Ty1-NA&s',
     'https://img.freepik.com/free-photo/shapely-woman-vintage-dress-touching-her-glasses-outdoor-shot-interested-relaxed-girl-brown-outfit_197531-11308.jpg',
     'https://img.freepik.com/premium-photo/cheerful-lady-brown-outfit-looking-around-outdoor-portrait-fashionable-caucasian-model-with-short-wavy-hairstyle_197531-25791.jpg',
   ];
@@ -47,8 +50,11 @@ class HomePage extends StatelessWidget {
               isAssets: false,
               autoPlay: true,
               expandFitAndZoomable: true,
-              sliderHeight: 400,
+              sliderHeight: 300,
+              showArrowNav: true,
               showIndicator: true,
+              slideViewportFraction: 1,
+              displayIndicatorOnSlider: false,
             ),
             const SizedBox(
               height: 30,

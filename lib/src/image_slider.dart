@@ -44,6 +44,7 @@ class FanCarouselImageSlider extends StatelessWidget {
         )),
     this.expandedCloseBtnDecoration,
     this.expandFitAndZoomable = false,
+    this.displayIndicatorOnSlider = false,
   })  : assert(imagesLink.length > 0),
         assert(initalPageIndex <= (imagesLink.length - 1) && initalPageIndex >= 0),
         imageSliderType = ImageSliderType.imageSliderType1;
@@ -89,6 +90,7 @@ class FanCarouselImageSlider extends StatelessWidget {
         imageSliderType = ImageSliderType.imageSliderType2,
         turns = 250,
         showIndicator = true,
+        displayIndicatorOnSlider = false,
         showArrowNav = false;
 
   /// List of images to be shown in the slider; Accepts two types of link.
@@ -213,6 +215,10 @@ class FanCarouselImageSlider extends StatelessWidget {
   /// Default to false
   final bool expandFitAndZoomable;
 
+  /// Determines where the indicators should display, On top of slider or bottom of that
+  /// Default to bottom of slider
+  final bool displayIndicatorOnSlider;
+
   final ImageSliderType imageSliderType;
 
   @override
@@ -247,6 +253,7 @@ class FanCarouselImageSlider extends StatelessWidget {
             expandedCloseChild: expandedCloseChild,
             expandedCloseBtnDecoration: expandedCloseBtnDecoration,
             expandFitAndZoomable: expandFitAndZoomable,
+            displayIndicatorOnSlider: displayIndicatorOnSlider,
           ),
         ImageSliderType.imageSliderType2 => ImageSliderType2Widget(
             imagesLink: imagesLink,

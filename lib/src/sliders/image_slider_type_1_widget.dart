@@ -39,6 +39,7 @@ class ImageSliderType1Widget extends StatefulWidget {
     required this.expandedCloseChild,
     required this.expandedCloseBtnDecoration,
     required this.expandFitAndZoomable,
+    required this.displayIndicatorOnSlider,
   });
 
   final List<String> imagesLink;
@@ -98,6 +99,8 @@ class ImageSliderType1Widget extends StatefulWidget {
   final BoxDecoration? expandedCloseBtnDecoration;
 
   final bool expandFitAndZoomable;
+
+  final bool displayIndicatorOnSlider;
 
   @override
   State<ImageSliderType1Widget> createState() => _ImageSliderType1State();
@@ -250,9 +253,7 @@ class _ImageSliderType1State extends State<ImageSliderType1Widget> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               Visibility(
                 visible: widget.showArrowNav,
                 child: ArrawNavs(
@@ -260,20 +261,29 @@ class _ImageSliderType1State extends State<ImageSliderType1Widget> {
                   goPrevPage: () => _goPrevPage(),
                 ),
               ),
-              Visibility(
-                visible: widget.showIndicator,
-                child: ValueListenableBuilder(
-                  valueListenable: _currentIndex,
-                  builder: (context, value, child) => IndicatorsWidget(
-                    indicatorActiveColor: widget.indicatorActiveColor,
-                    indicatorDeactiveColor: widget.indicatorDeactiveColor,
-                    sliderDuration: widget.sliderDuration,
-                    imagesLink: widget.imagesLink,
-                    actualIndex: value,
-                  ),
-                ),
-              ),
             ],
+          ),
+        ),
+        Positioned(
+          right: 0,
+          left: 0,
+          bottom: widget.displayIndicatorOnSlider
+              ? (!widget.showArrowNav ? 40 : 90)
+              : !widget.showArrowNav
+                  ? 0
+                  : 50,
+          child: Visibility(
+            visible: widget.showIndicator,
+            child: ValueListenableBuilder(
+              valueListenable: _currentIndex,
+              builder: (context, value, child) => IndicatorsWidget(
+                indicatorActiveColor: widget.indicatorActiveColor,
+                indicatorDeactiveColor: widget.indicatorDeactiveColor,
+                sliderDuration: widget.sliderDuration,
+                imagesLink: widget.imagesLink,
+                actualIndex: value,
+              ),
+            ),
           ),
         ),
       ],
