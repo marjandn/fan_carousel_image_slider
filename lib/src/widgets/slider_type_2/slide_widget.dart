@@ -1,4 +1,6 @@
+import 'package:fan_carousel_image_slider/src/exts/string_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class SlideWidget extends StatelessWidget {
   const SlideWidget({
@@ -49,7 +51,11 @@ class SlideWidget extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(imageRadius),
               image: DecorationImage(
-                image: (!isAssets) ? NetworkImage(imageLink) : AssetImage(imageLink) as ImageProvider,
+                image: (!isAssets)
+                    ? NetworkImage(imageLink)
+                    : imageLink.isSvgImage
+                        ? Svg(imageLink)
+                        : AssetImage(imageLink) as ImageProvider,
                 fit: imageFitMode,
               ),
             ),

@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:easy_image_viewer/easy_image_viewer.dart';
+import 'package:fan_carousel_image_slider/src/exts/string_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../widgets/slider_type_2/slide_widget.dart';
 
 class ImageSliderType2Widget extends StatefulWidget {
@@ -155,7 +157,9 @@ class _ImageSliderType2State extends State<ImageSliderType2Widget> {
                         ? DecorationImage(
                             image: (!widget.isAssets)
                                 ? NetworkImage(expandedImage!)
-                                : AssetImage(expandedImage!) as ImageProvider,
+                                : expandedImage!.isSvgImage
+                                    ? Svg(expandedImage!)
+                                    : AssetImage(expandedImage!) as ImageProvider,
                             fit: widget.expandedImageFitMode,
                           )
                         : null,
@@ -221,10 +225,12 @@ class _ImageSliderType2State extends State<ImageSliderType2Widget> {
                             if (widget.expandFitAndZoomable) {
                               showImageViewer(
                                   context,
-                                  (widget.isAssets
-                                          ? Image.asset(widget.imagesLink[index])
-                                          : Image.network(widget.imagesLink[index]))
-                                      .image, onViewerDismissed: () {
+                                  widget.isAssets
+                                      ? (widget.imagesLink[index].isSvgImage
+                                          ? Svg(widget.imagesLink[index])
+                                          : Image.asset(widget.imagesLink[index]).image)
+                                      : Image.network(widget.imagesLink[index]).image,
+                                  onViewerDismissed: () {
                                 _isExpandSlide.value = false;
                               });
                             } else {
@@ -262,7 +268,9 @@ class _ImageSliderType2State extends State<ImageSliderType2Widget> {
                                   image: DecorationImage(
                                     image: (!widget.isAssets)
                                         ? NetworkImage(entire.value)
-                                        : AssetImage(entire.value) as ImageProvider,
+                                        : entire.value.isSvgImage
+                                            ? Svg(entire.value)
+                                            : AssetImage(entire.value) as ImageProvider,
                                     fit: widget.imageFitMode,
                                   ),
                                 ),

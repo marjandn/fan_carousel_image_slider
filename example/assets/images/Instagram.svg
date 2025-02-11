@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 20 20">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.917" y1="0.072" x2="0.128" y2="0.946" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#8342b1"/>
+      <stop offset="0.507" stop-color="#cc3676"/>
+      <stop offset="1" stop-color="#f0b661"/>
+    </linearGradient>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_19388" data-name="Rectangle 19388" width="20" height="20" stroke="#707070" stroke-width="1" fill="url(#linear-gradient)"/>
+    </clipPath>
+  </defs>
+  <g id="Mask_Group_15726" data-name="Mask Group 15726" clip-path="url(#clip-path)">
+    <g id="instagram_8_" data-name="instagram (8)" transform="translate(0)">
+      <g id="Group_17902" data-name="Group 17902">
+        <g id="Group_17901" data-name="Group 17901">
+          <path id="Path_46382" data-name="Path 46382" d="M15,0H5A5.015,5.015,0,0,0,0,5V15a5.015,5.015,0,0,0,5,5H15a5.015,5.015,0,0,0,5-5V5A5.015,5.015,0,0,0,15,0Zm3.333,15A3.337,3.337,0,0,1,15,18.333H5A3.337,3.337,0,0,1,1.667,15V5A3.337,3.337,0,0,1,5,1.667H15A3.337,3.337,0,0,1,18.333,5V15Z" transform="translate(0)" fill="url(#linear-gradient)"/>
+        </g>
+      </g>
+      <g id="Group_17904" data-name="Group 17904" transform="translate(14.167 3.333)">
+        <g id="Group_17903" data-name="Group 17903">
+          <circle id="Ellipse_633" data-name="Ellipse 633" cx="1.25" cy="1.25" r="1.25" fill="url(#linear-gradient)"/>
+        </g>
+      </g>
+      <g id="Group_17906" data-name="Group 17906" transform="translate(5 5)">
+        <g id="Group_17905" data-name="Group 17905">
+          <path id="Path_46383" data-name="Path 46383" d="M10,5a5,5,0,1,0,5,5A5,5,0,0,0,10,5Zm0,8.334A3.333,3.333,0,1,1,13.333,10,3.333,3.333,0,0,1,10,13.333Z" transform="translate(-5 -5)" fill="url(#linear-gradient)"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
