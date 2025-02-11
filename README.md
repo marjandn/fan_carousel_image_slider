@@ -178,4 +178,12 @@ Customize the FanCarouselImageSlider widget with these parameters:
   /// Determines the style of the expanded image's close button container.
   /// It can be null then the default style will be applied.
   final BoxDecoration? expandedCloseBtnDecoration;
+
+  /// Determines the expand tapped image mode to be zoomable and display image in the original size
+  /// Default to false
+  final bool expandFitAndZoomable;
+
+  /// Determines where the indicators should display, On the slider or below it
+  /// Default to bottom of slider
+  final bool displayIndicatorOnSlider;
 ```

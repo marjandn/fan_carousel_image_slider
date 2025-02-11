@@ -1,3 +1,9 @@
+## 1.3.0
+
+- Add a zoomable way to open tapped image by expandFitAndZoomable field 
+- Add a possibility to display markers on or below the slider (for slider type 1).
+- Add support of svg files in asset mode list
+
 ## 1.0.1
 
 - Upgrade Flutter SDK version
