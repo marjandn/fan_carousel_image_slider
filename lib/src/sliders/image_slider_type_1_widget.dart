@@ -202,10 +202,13 @@ class _ImageSliderType1State extends State<ImageSliderType1Widget> {
         ),
         ValueListenableBuilder<bool>(
           valueListenable: _isExpandSlide,
-          builder: (context, isExpand, child) => AnimatedOpacity(
-            opacity: (!isExpand) ? 1 : 0,
-            duration: widget.sliderDuration,
-            child: child,
+          builder: (context, isExpand, child) => IgnorePointer(
+            ignoring: isExpand,
+            child: AnimatedOpacity(
+              opacity: (!isExpand) ? 1 : 0,
+              duration: widget.sliderDuration,
+              child: child,
+            ),
           ),
           child: Column(
             children: [
