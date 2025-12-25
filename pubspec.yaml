@@ -1,6 +1,6 @@
 name: fan_carousel_image_slider
 description: A fantasy carousel slider widget. only for displaying online and local images.
-version: 1.3.0
+version: 1.3.1
 homepage: https://github.com/marjandn/fan_carousel_image_slider
 
 environment:

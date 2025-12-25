@@ -1,3 +1,6 @@
+## 1.3.1
+- fix: add IgnorePointer to fix close button touch issue when image expanded
+
 ## 1.3.0
 
 - Add a zoomable way to open tapped image by expandFitAndZoomable field 
